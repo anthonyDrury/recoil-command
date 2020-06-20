@@ -8,16 +8,28 @@ export const gameSpeed = atom({
   default: 50,
 });
 
-// to keep track of the last atom shot
+// Change the enemy will shoot
+export const enemyLevel = atom({
+  key: "enemyLevel",
+  default: 0.01,
+});
+
+// to keep track of the last player atom shot
 export const lastShot = atom({
   key: "lastShot",
+  default: 0,
+});
+
+// to keep track of the last enemy atom shot
+export const lastEnemyShot = atom({
+  key: "lastEnemyShot",
   default: 0,
 });
 
 // keys of active items on the board
 export const activeItems = atom({
   key: "activeKeys",
-  default: [{ index: "0", type: "ITEM" }],
+  default: [{ index: 0, type: "ITEM" }],
 });
 
 export const itemFamily = atomFamily({

@@ -6,13 +6,13 @@ import { useRecoilValue } from "recoil";
 import { gameSpeed } from "../state/atoms";
 
 function GameBoard() {
-  const setItem = useSetRecoilState(updateItemsPositions);
+  const render = useSetRecoilState(updateItemsPositions);
   const intervalMs = useRecoilValue(gameSpeed);
 
   useEffect(() => {
-    const interval = setInterval(setItem, intervalMs);
+    const interval = setInterval(render, intervalMs);
     return () => clearInterval(interval);
-  }, []);
+  }, [intervalMs]);
 
   return (
     <>

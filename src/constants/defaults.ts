@@ -4,4 +4,6 @@ export const defaultItem = {
   xIncrement: 0,
   yIncrement: 0,
   veerLeft: false,
+  type: "ITEM",
+  index: 0,
 };
