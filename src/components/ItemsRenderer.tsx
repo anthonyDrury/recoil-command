@@ -1,25 +1,20 @@
 import React from "react";
-import { useRecoilState } from "recoil";
-import { activeItems } from "../state/atoms";
 import BallShooter from "./BallShooter";
-import ShotItem from "./ShotItem";
-import EnemyItem from "./EnemyItem";
 import EnemyShooter from "./EnemyShooter";
+import ShotRenderer from "./ShotRenderer";
+import DefenceRange from "./DefenceRange";
+import PowerBar from "./PowerBar";
+import DefenceBar from "./DefenceBar";
 
 function ItemsRenderer() {
-  const [items] = useRecoilState(activeItems);
-
   return (
     <>
       <EnemyShooter />
-      {items.map((ref) =>
-        ref.type === "SHOT" ? (
-          <ShotItem itemKey={ref.index} />
-        ) : (
-          <EnemyItem itemKey={ref.index} />
-        )
-      )}
+      <PowerBar />
+      <DefenceBar />
+      <ShotRenderer />
       <BallShooter />
+      <DefenceRange />
     </>
   );
 }

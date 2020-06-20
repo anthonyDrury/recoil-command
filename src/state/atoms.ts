@@ -15,6 +15,24 @@ export const enemyLevel = atom<number>({
   default: 0.01,
 });
 
+// Whether the defence was hit this render
+export const defenceHit = atom<boolean>({
+  key: "defenceHit",
+  default: false,
+});
+
+// Strength of players defence
+export const defenceBar = atom<number>({
+  key: "defenceBar",
+  default: 100,
+});
+
+// Power player has left
+export const powerBar = atom<number>({
+  key: "powerBar",
+  default: 100,
+});
+
 // to keep track of the last player atom shot
 export const lastShot = atom<number>({
   key: "lastShot",
@@ -30,7 +48,7 @@ export const lastEnemyShot = atom<number>({
 // keys of active items on the board
 export const activeItems = atom<itemReference[]>({
   key: "activeKeys",
-  default: [{ index: 0, type: "ITEM" }],
+  default: [],
 });
 
 export const itemFamily = atomFamily<item<"ITEM">, number>({

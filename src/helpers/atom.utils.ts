@@ -1,5 +1,6 @@
 import { itemReference, item } from "../types/atom.types";
-import { itemFamily, shotFamily } from "../state/atoms";
+import { itemFamily } from "../state/atoms";
+import { getHeight } from "./window.utils";
 
 export function calculateNextItemState(item: item) {
   return {
@@ -26,11 +27,20 @@ function hasCollided(a: item, b: item) {
   return isXInRange && isYInRange;
 }
 
-// determine if items are within 30px of each other
+function hasHitDefence(item: item) {
+  if (item.type === "SHOT") {
+    return false;
+  }
+  const height = getHeight() - 30;
+  return item.y >= height;
+}
+
+// determine if items are within range of each other
 // if so remove them from active list
 export function determineCollisions(items: item[]) {
   const collisions: Set<itemReference> = new Set();
   const newStates: item[] = [];
+  let isDefenceHit: boolean = false;
 
   // Calculate new states
   items.forEach((item) => {
@@ -50,8 +60,11 @@ export function determineCollisions(items: item[]) {
         hasCollided(item, otherItem)
       ) {
         collisions.add(item);
+      } else if (hasHitDefence(item)) {
+        collisions.add(item);
+        isDefenceHit = true;
       }
     });
   });
-  return { collisions, newStates };
+  return { collisions, newStates, isDefenceHit };
 }
