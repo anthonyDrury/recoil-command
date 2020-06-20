@@ -20,7 +20,7 @@ function EnemyShooter() {
         y: 0,
         x: Math.floor(Math.random() * getWidth()),
         xIncrement: Math.random(),
-        yIncrement: Math.random(),
+        yIncrement: -Math.abs(Math.random()),
         veerLeft: Math.random() > 0.5,
       });
     }
