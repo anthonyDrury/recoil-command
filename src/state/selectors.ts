@@ -1,4 +1,4 @@
-import { selector, selectorFamily } from "recoil";
+import { selector, selectorFamily, RecoilState } from "recoil";
 import {
   activeItems,
   itemFamily,
@@ -6,13 +6,20 @@ import {
   shotFamily,
   lastEnemyShot,
 } from "./atoms";
-import { calculateNextItemState } from "../helpers/atom.utils";
+import { isSameItem, determineCollisions } from "../helpers/atom.utils";
+import { item } from "../types/atom.types";
 
 export const getActiveItems = selector({
   key: "filteredTodoListState",
   get: ({ get }) => {
     const itemIDs = get(activeItems);
-    const items = itemIDs.map((key) => get(itemFamily(key)));
+    const items = itemIDs.map((key) => {
+      if (key.type === "SHOT") {
+        return get(shotFamily(key.index));
+      } else {
+        return get(itemFamily(key.index));
+      }
+    });
 
     return items;
   },
@@ -23,25 +30,53 @@ export const updateItemsPositions = selector({
   get: () => {},
   set: ({ get, set }) => {
     const itemIDs = get(activeItems);
-    itemIDs.forEach((ref) => {
+    const items = itemIDs.map((ref) => {
       const atom =
-        ref.type === "ITEM" ? itemFamily(ref.index) : shotFamily(ref.index);
+        ref.type === "ITEM"
+          ? itemFamily(ref.index)
+          : (shotFamily(ref.index) as RecoilState<item>);
+      return get(atom);
+    });
+    const { collisions, newStates } = determineCollisions(items);
 
-      set(atom, (item) => calculateNextItemState(item));
+    newStates.forEach((newItem: item) => {
+      if (collisions.has(newItem)) {
+        console.log("COLLISION");
+        set(removeActiveItem, newItem);
+      } else {
+        console.log(newItem);
+        if (newItem.type === "ITEM") {
+          set(itemFamily(newItem.index), newItem as item<"ITEM">);
+        } else {
+          set(shotFamily(newItem.index), newItem as item<"SHOT">);
+        }
+      }
+    });
+  },
+});
+
+export const removeActiveItem = selector({
+  key: "removeActiveItem",
+  get: () => {},
+  set: ({ set }, item: any) => {
+    set(activeItems, (items) => {
+      return items.filter((itemRef) => {
+        return !isSameItem(item, itemRef);
+      });
     });
   },
 });
 
 export const setNextShot = selector({
   key: "setNextShot",
-  get: ({ get }) => {},
+  get: () => {},
   set: ({ get, set }, position: any) => {
     const nextShot = get(getNextShotIndex);
     set(shotFamily(nextShot), {
       ...position,
       index: nextShot,
       type: "SHOT",
-    });
+    } as item<"SHOT">);
     set(activeItems, (items) => [...items, { index: nextShot, type: "SHOT" }]);
     set(lastShot, nextShot);
   },
@@ -49,7 +84,7 @@ export const setNextShot = selector({
 
 export const setEnemyShot = selector({
   key: "setNextEnemyShot",
-  get: ({ get }) => {},
+  get: () => {},
   set: ({ get, set }, position: any) => {
     const nextShot = get(getNextEnemyShotIndex);
     set(itemFamily(nextShot), {

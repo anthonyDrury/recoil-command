@@ -73,23 +73,25 @@ function BallShooter(props: { debugMode?: boolean }) {
       }}
       onClick={handleShoot}
     >
-      <div
-        style={{
-          position: "absolute",
-          maxHeight: "200px",
-          maxWidth: "200px",
-          backgroundColor: props.debugMode ? "blue" : "",
-          bottom: 0,
-          height: Math.abs(
-            mousePosition.y - (shooterRef.current?.offsetTop ?? 0) - 100
-          ),
-          width: Math.abs(
-            mousePosition.x - (shooterRef.current?.offsetLeft ?? 0) - 100
-          ),
-          left: `calc(50% + ${triangleWidth()}px)`,
-          zIndex: 100,
-        }}
-      ></div>
+      {props.debugMode ? (
+        <div
+          style={{
+            position: "absolute",
+            maxHeight: "200px",
+            maxWidth: "200px",
+            backgroundColor: props.debugMode ? "blue" : "",
+            bottom: 0,
+            height: Math.abs(
+              mousePosition.y - (shooterRef.current?.offsetTop ?? 0) - 100
+            ),
+            width: Math.abs(
+              mousePosition.x - (shooterRef.current?.offsetLeft ?? 0) - 100
+            ),
+            left: `calc(50% + ${triangleWidth()}px)`,
+            zIndex: 100,
+          }}
+        ></div>
+      ) : null}
     </div>
   );
 }
