@@ -5,9 +5,13 @@ import {
   lastShot,
   shotFamily,
   lastEnemyShot,
+  defenceHit,
+  defenceBar,
+  powerBar,
 } from "./atoms";
 import { isSameItem, determineCollisions } from "../helpers/atom.utils";
 import { item } from "../types/atom.types";
+import { getNumberInRange } from "../helpers/common.utils";
 
 export const getActiveItems = selector({
   key: "filteredTodoListState",
@@ -37,14 +41,15 @@ export const updateItemsPositions = selector({
           : (shotFamily(ref.index) as RecoilState<item>);
       return get(atom);
     });
-    const { collisions, newStates } = determineCollisions(items);
+    const { collisions, newStates, isDefenceHit } = determineCollisions(items);
 
     newStates.forEach((newItem: item) => {
       if (collisions.has(newItem)) {
-        console.log("COLLISION");
         set(removeActiveItem, newItem);
+        // limit power to 100
+        set(powerBar, (val) => getNumberInRange(val + 5, 0, 100));
       } else {
-        console.log(newItem);
+        set(powerBar, (val) => getNumberInRange(val + 0.001, 0, 100));
         if (newItem.type === "ITEM") {
           set(itemFamily(newItem.index), newItem as item<"ITEM">);
         } else {
@@ -52,6 +57,10 @@ export const updateItemsPositions = selector({
         }
       }
     });
+    set(defenceHit, isDefenceHit);
+    if (isDefenceHit) {
+      set(defenceBar, (val) => getNumberInRange(val - 10, 0, 100));
+    }
   },
 });
 
@@ -71,6 +80,10 @@ export const setNextShot = selector({
   key: "setNextShot",
   get: () => {},
   set: ({ get, set }, position: any) => {
+    const power = get(powerBar);
+    if (power < 5) {
+      return;
+    }
     const nextShot = get(getNextShotIndex);
     set(shotFamily(nextShot), {
       ...position,
@@ -78,6 +91,7 @@ export const setNextShot = selector({
       type: "SHOT",
     } as item<"SHOT">);
     set(activeItems, (items) => [...items, { index: nextShot, type: "SHOT" }]);
+    set(powerBar, (val) => getNumberInRange(val - 5, 0, 100));
     set(lastShot, nextShot);
   },
 });

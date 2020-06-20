@@ -1,11 +1,11 @@
 import { useSetRecoilState } from "recoil";
-import { activeItems } from "../state/atoms";
 import { getWidth, getHeight } from "./window.utils";
 import { useEffect } from "react";
 import { item } from "../types/atom.types";
+import { removeActiveItem } from "../state/selectors";
 
 export function useIsActive(currentItem: item) {
-  const setIsActive = useSetRecoilState(activeItems);
+  const removeItemFromActive = useSetRecoilState(removeActiveItem);
   function calculateWidth() {
     return getWidth() + 30;
   }
@@ -24,13 +24,7 @@ export function useIsActive(currentItem: item) {
       currentItem.y < -30
     ) {
       // Remove reference from activeItems
-      setIsActive((activeItems) => {
-        return activeItems.filter((item) => {
-          return !(
-            item.type === currentItem.type && item.index === currentItem.index
-          );
-        });
-      });
+      removeItemFromActive(currentItem);
     }
   }, [currentItem]);
 }

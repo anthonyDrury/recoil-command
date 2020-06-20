@@ -70,6 +70,7 @@ function BallShooter(props: { debugMode?: boolean }) {
         borderTopLeftRadius: "100px",
         borderTopRightRadius: "100px",
         bottom: "0",
+        zIndex: 1,
       }}
       onClick={handleShoot}
     >
