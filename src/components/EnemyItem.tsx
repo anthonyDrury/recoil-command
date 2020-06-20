@@ -1,21 +1,26 @@
 import React from "react";
 import { useRecoilValue } from "recoil";
 import { itemFamily } from "../state/atoms";
+import { useIsActive } from "../helpers/hooks";
+import { item } from "../types/atom.types";
 
-function EnemyItem(props: { itemKey: string }) {
-  const item = useRecoilValue(itemFamily(props.itemKey));
+function EnemyItem(props: { itemKey: number }) {
+  const enemyShot: item = useRecoilValue(itemFamily(props.itemKey));
+  useIsActive(enemyShot);
 
   return (
     <div
       style={{
         position: "absolute",
-        top: item.y,
-        left: item.x,
+        top: enemyShot.y,
+        left: enemyShot.x,
         zIndex: 200,
+        backgroundColor: "red",
+        width: 30,
+        height: 30,
+        borderRadius: 15,
       }}
-    >
-      {"Watch me go"}
-    </div>
+    />
   );
 }
 
