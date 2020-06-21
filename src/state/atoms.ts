@@ -1,6 +1,10 @@
 import { atom, atomFamily } from "recoil";
-import { item, itemReference } from "../types/atom.types";
-import { getDefaultItem } from "../constants/defaults";
+import { item, itemReference, baseItem, itemTrail } from "../types/atom.types";
+import {
+  getDefaultItem,
+  getDefaultBaseItem,
+  getDefaultItemTrail,
+} from "../constants/defaults";
 
 // How often we should refresh the game board
 // in milliseconds, used in the gameBoard setInterval
@@ -57,6 +61,12 @@ export const lastEnemyShot = atom<number>({
   default: 0,
 });
 
+// to keep track of the last enemy atom shot
+export const lastEnemyTrail = atom<number>({
+  key: "lastEnemyTrail",
+  default: 0,
+});
+
 // keys of active items on the board
 export const activeItems = atom<itemReference[]>({
   key: "activeKeys",
@@ -64,11 +74,16 @@ export const activeItems = atom<itemReference[]>({
 });
 
 export const itemFamily = atomFamily<item<"ITEM">, number>({
-  key: "Item",
+  key: "stem",
   default: getDefaultItem("ITEM"),
 });
 
 export const shotFamily = atomFamily<item<"SHOT">, number>({
-  key: "Shot",
+  key: "shot",
   default: getDefaultItem("SHOT"),
+});
+
+export const itemTrailFamily = atomFamily<itemTrail, number>({
+  key: "shotTrail",
+  default: getDefaultItemTrail(),
 });

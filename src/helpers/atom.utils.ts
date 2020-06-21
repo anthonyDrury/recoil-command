@@ -15,6 +15,19 @@ export function isSameItem(x: item | itemReference, y: item | itemReference) {
   return x.type === y.type && x.index === y.index;
 }
 
+//
+export function isSameItemOrTrailFor(
+  x: item | itemReference,
+  y: item | itemReference
+) {
+  return (
+    (x.type === y.type ||
+      (x.type === "ITEM_TRAIL" && y.type === "ITEM") ||
+      (x.type === "ITEM" && y.type === "ITEM_TRAIL")) &&
+    x.index === y.index
+  );
+}
+
 // checks if x and y are within 25px of each other
 function hasCollided(a: item, b: item) {
   const xRange = a.x - b.x;
