@@ -11,9 +11,15 @@ import {
   points,
   enemyIncrement,
   enemyLevel,
+  itemTrailFamily,
+  lastEnemyTrail,
 } from "./atoms";
-import { isSameItem, determineCollisions } from "../helpers/atom.utils";
-import { item } from "../types/atom.types";
+import {
+  isSameItem,
+  determineCollisions,
+  isSameItemOrTrailFor,
+} from "../helpers/atom.utils";
+import { item, baseItem, itemTrail, movingItemType } from "../types/atom.types";
 import { getNumberInRange } from "../helpers/common.utils";
 
 export const getActiveItems = selector({
@@ -43,13 +49,16 @@ export const updateItemsPositions = selector({
       return;
     }
     const itemIDs = get(activeItems);
-    const items = itemIDs.map((ref) => {
-      const atom =
-        ref.type === "ITEM"
-          ? itemFamily(ref.index)
-          : (shotFamily(ref.index) as RecoilState<item>);
-      return get(atom);
-    });
+    const items = itemIDs
+      .filter((ref) => ref.type !== "ITEM_TRAIL")
+      .map((ref) => {
+        const atom =
+          ref.type === "ITEM"
+            ? itemFamily(ref.index)
+            : (shotFamily(ref.index) as RecoilState<item>);
+        return get(atom);
+      });
+
     const {
       shotCollisions,
       defenceCollisions,
@@ -79,8 +88,10 @@ export const updateItemsPositions = selector({
         shotCollisions.delete(`${newItem.type}_${newItem.index}`);
       } else {
         set(powerBar, (val) => getNumberInRange(val + 0.001, 0, 100));
+
         if (newItem.type === "ITEM") {
           set(itemFamily(newItem.index), newItem as item<"ITEM">);
+          set(setItemTrail, newItem);
         } else {
           set(shotFamily(newItem.index), newItem as item<"SHOT">);
         }
@@ -103,13 +114,42 @@ export const updateItemsPositions = selector({
   },
 });
 
+export const setItemTrail = selector({
+  key: "setItemTrail",
+  get: () => {},
+  set: ({ set }, item: any) => {
+    let isNew: boolean = false;
+    set(
+      itemTrailFamily(item.index),
+      (val): itemTrail => {
+        isNew = val.startX === -1;
+        return {
+          index: item.index,
+          type: "ITEM_TRAIL",
+          x: item.x,
+          y: item.y,
+          startX: val.startX > 0 ? val.startX : item.x,
+          startY: val.startY > 0 ? val.startY : item.y,
+        };
+      }
+    );
+    if (isNew) {
+      set(activeItems, (items) => [
+        ...items,
+        { index: item.index, type: "ITEM_TRAIL" },
+      ]);
+    }
+  },
+});
+
 export const removeActiveItem = selector({
   key: "removeActiveItem",
   get: () => {},
   set: ({ set }, item: any) => {
     set(activeItems, (items) => {
       return items.filter((itemRef) => {
-        return !isSameItem(item, itemRef);
+        // Remove item from list and remove trail for that item
+        return !isSameItemOrTrailFor(item, itemRef);
       });
     });
   },

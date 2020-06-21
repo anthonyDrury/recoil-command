@@ -3,6 +3,7 @@ import { activeItems } from "../state/atoms";
 import ShotItem from "./ShotItem";
 import EnemyItem from "./EnemyItem";
 import { useRecoilValue } from "recoil";
+import EnemyItemTrail from "./EnemyItemTrail";
 
 function ShotRenderer() {
   const items = useRecoilValue(activeItems);
@@ -10,13 +11,18 @@ function ShotRenderer() {
   return (
     <>
       {items.length > 0 &&
-        items.map((ref) =>
-          ref.type === "SHOT" ? (
-            <ShotItem itemKey={ref.index} />
-          ) : (
-            <EnemyItem itemKey={ref.index} />
-          )
-        )}
+        items.map((ref) => {
+          switch (ref.type) {
+            case "SHOT":
+              return <ShotItem itemKey={ref.index} />;
+            case "ITEM":
+              return <EnemyItem itemKey={ref.index} />;
+            case "ITEM_TRAIL":
+              return <EnemyItemTrail itemKey={ref.index} />;
+            default:
+              return null;
+          }
+        })}
     </>
   );
 }
