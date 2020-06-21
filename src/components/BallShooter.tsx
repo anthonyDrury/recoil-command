@@ -41,8 +41,8 @@ function BallShooter(props: { debugMode?: boolean }) {
       console.log(`yIncrement: ${angle / 90}`);
     }
     setShot({
-      x: mousePosition.x,
-      y: mousePosition.y,
+      x: (shooterRef.current?.getBoundingClientRect().left ?? 0) + 80,
+      y: shooterRef.current?.getBoundingClientRect().top ?? 0,
       xIncrement: ((90 - angle) / 90) * 2,
       yIncrement: (angle / 90) * 2,
       veerLeft: veerLeft,
@@ -62,10 +62,18 @@ function BallShooter(props: { debugMode?: boolean }) {
   }
 
   return (
-    <div style={{ zIndex: 10 }} onClick={handleShoot}>
+    <div
+      style={{
+        zIndex: 20,
+        width: "100%",
+        height: "100%",
+        position: "absolute",
+      }}
+      onMouseMove={handleMouseMove}
+      onClick={handleShoot}
+    >
       <div
         ref={shooterRef}
-        onMouseMove={handleMouseMove}
         style={{
           position: "absolute",
           left: "calc(50% - 100px)",
