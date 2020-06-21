@@ -9,7 +9,7 @@ function DefenceBar() {
     <div
       style={{
         position: "absolute",
-        top: 60,
+        top: 70,
         left: 0,
         height: 30,
         zIndex: 10,

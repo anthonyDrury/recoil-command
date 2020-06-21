@@ -62,42 +62,43 @@ function BallShooter(props: { debugMode?: boolean }) {
   }
 
   return (
-    <div
-      ref={shooterRef}
-      onMouseMove={handleMouseMove}
-      style={{
-        position: "absolute",
-        left: "calc(50% - 100px)",
-        backgroundColor: "grey",
-        textAlign: "center",
-        width: "200px",
-        height: "100px",
-        borderTopLeftRadius: "100px",
-        borderTopRightRadius: "100px",
-        bottom: "0",
-        zIndex: 1,
-      }}
-      onClick={handleShoot}
-    >
-      {props.debugMode ? (
-        <div
-          style={{
-            position: "absolute",
-            maxHeight: "200px",
-            maxWidth: "200px",
-            backgroundColor: props.debugMode ? "blue" : "",
-            bottom: 0,
-            height: Math.abs(
-              mousePosition.y - (shooterRef.current?.offsetTop ?? 0) - 100
-            ),
-            width: Math.abs(
-              mousePosition.x - (shooterRef.current?.offsetLeft ?? 0) - 100
-            ),
-            left: `calc(50% + ${triangleWidth()}px)`,
-            zIndex: 100,
-          }}
-        ></div>
-      ) : null}
+    <div style={{ zIndex: 10 }} onClick={handleShoot}>
+      <div
+        ref={shooterRef}
+        onMouseMove={handleMouseMove}
+        style={{
+          position: "absolute",
+          left: "calc(50% - 100px)",
+          backgroundColor: "grey",
+          textAlign: "center",
+          width: "200px",
+          height: "100px",
+          borderTopLeftRadius: "100px",
+          borderTopRightRadius: "100px",
+          bottom: "0",
+          zIndex: 1,
+        }}
+      >
+        {props.debugMode ? (
+          <div
+            style={{
+              position: "absolute",
+              maxHeight: "200px",
+              maxWidth: "200px",
+              backgroundColor: props.debugMode ? "blue" : "",
+              bottom: 0,
+              height: Math.abs(
+                mousePosition.y - (shooterRef.current?.offsetTop ?? 0) - 100
+              ),
+              width: Math.abs(
+                mousePosition.x - (shooterRef.current?.offsetLeft ?? 0) - 100
+              ),
+              left: `calc(50% + ${triangleWidth()}px)`,
+              zIndex: 100,
+            }}
+          ></div>
+        ) : null}
+      </div>
     </div>
   );
 }
