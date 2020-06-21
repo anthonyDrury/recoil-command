@@ -9,6 +9,8 @@ import {
   defenceBar,
   powerBar,
   points,
+  enemyIncrement,
+  enemyLevel,
 } from "./atoms";
 import { isSameItem, determineCollisions } from "../helpers/atom.utils";
 import { item } from "../types/atom.types";
@@ -37,6 +39,9 @@ export const updateItemsPositions = selector({
   key: "updateActiveItemPositions",
   get: () => {},
   set: ({ get, set }) => {
+    if (get(getHasLost)) {
+      return;
+    }
     const itemIDs = get(activeItems);
     const items = itemIDs.map((ref) => {
       const atom =
@@ -61,12 +66,10 @@ export const updateItemsPositions = selector({
         set(removeActiveItem, newItem);
 
         // limit power to 100
-        set(powerBar, (val) => getNumberInRange(val + 5, 0, 100));
+        set(powerBar, (val) => getNumberInRange(val + 10, 0, 100));
 
-        if (!get(getHasLost)) {
-          // Since per collision there us two items
-          set(points, (val) => val + 0.5);
-        }
+        // Since per collision there us two items
+        set(points, (val) => val + 0.5);
       }
       // If enemy shot collides with defence, adjust defence
       else if (
@@ -89,6 +92,14 @@ export const updateItemsPositions = selector({
     if (isDefenceHit) {
       set(defenceBar, (val) => getNumberInRange(val - 10, 0, 100));
     }
+    set(enemyIncrement, (val) => {
+      let newVal = val + 1;
+      if (newVal === 200) {
+        set(enemyLevel, (level) => level + 0.01);
+        newVal = 1;
+      }
+      return newVal;
+    });
   },
 });
 

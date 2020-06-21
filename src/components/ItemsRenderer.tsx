@@ -6,6 +6,7 @@ import DefenceRange from "./DefenceRange";
 import PowerBar from "./PowerBar";
 import DefenceBar from "./DefenceBar";
 import PointsTally from "./PointsTally";
+import EnemyLevel from "./EnemyLevel";
 
 function ItemsRenderer() {
   return (
@@ -14,6 +15,7 @@ function ItemsRenderer() {
       <PowerBar />
       <DefenceBar />
       <PointsTally />
+      <EnemyLevel />
       <ShotRenderer />
       <BallShooter />
       <DefenceRange />

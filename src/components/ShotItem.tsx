@@ -16,6 +16,7 @@ function ShotItem(props: { itemKey: number }) {
         left: shot.x,
         zIndex: 9,
         backgroundColor: "blue",
+        background: "linear-gradient(blue, lightblue)",
         width: 30,
         height: 30,
         borderRadius: 15,
