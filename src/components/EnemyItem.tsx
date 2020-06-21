@@ -14,7 +14,7 @@ function EnemyItem(props: { itemKey: number }) {
         position: "absolute",
         top: enemyShot.y,
         left: enemyShot.x,
-        zIndex: 200,
+        zIndex: 9,
         backgroundColor: "red",
         width: 30,
         height: 30,

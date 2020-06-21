@@ -8,10 +8,12 @@ import {
   defenceHit,
   defenceBar,
   powerBar,
+  points,
 } from "./atoms";
 import { isSameItem, determineCollisions } from "../helpers/atom.utils";
 import { item } from "../types/atom.types";
 import { getNumberInRange } from "../helpers/common.utils";
+import DefenceBar from "../components/DefenceBar";
 
 export const getActiveItems = selector({
   key: "filteredTodoListState",
@@ -29,6 +31,9 @@ export const getActiveItems = selector({
   },
 });
 
+// This is the main setter function responsible
+// for updating all the positions and most of the values
+// of the atoms.
 export const updateItemsPositions = selector({
   key: "updateActiveItemPositions",
   get: () => {},
@@ -41,13 +46,33 @@ export const updateItemsPositions = selector({
           : (shotFamily(ref.index) as RecoilState<item>);
       return get(atom);
     });
-    const { collisions, newStates, isDefenceHit } = determineCollisions(items);
+    const {
+      shotCollisions,
+      defenceCollisions,
+      newStates,
+      isDefenceHit,
+    } = determineCollisions(items);
 
     newStates.forEach((newItem: item) => {
-      if (collisions.has(newItem)) {
+      // If shot collides, adjust points/power and remove active item
+      if (
+        shotCollisions.get(`${newItem.type}_${newItem.index}`) !== undefined
+      ) {
+        shotCollisions.delete(`${newItem.type}_${newItem.index}`);
         set(removeActiveItem, newItem);
+
         // limit power to 100
         set(powerBar, (val) => getNumberInRange(val + 5, 0, 100));
+
+        // Since per collision there us two items
+        set(points, (val) => val + 0.5);
+      }
+      // If enemy shot collides with defence, adjust defence
+      else if (
+        defenceCollisions.get(`${newItem.type}_${newItem.index}`) !== undefined
+      ) {
+        set(removeActiveItem, newItem);
+        shotCollisions.delete(`${newItem.type}_${newItem.index}`);
       } else {
         set(powerBar, (val) => getNumberInRange(val + 0.001, 0, 100));
         if (newItem.type === "ITEM") {
@@ -57,7 +82,9 @@ export const updateItemsPositions = selector({
         }
       }
     });
-    set(defenceHit, isDefenceHit);
+    if (get(defenceHit) !== isDefenceHit) {
+      set(defenceHit, isDefenceHit);
+    }
     if (isDefenceHit) {
       set(defenceBar, (val) => getNumberInRange(val - 10, 0, 100));
     }
@@ -119,6 +146,11 @@ export const getNextShotIndex = selector({
 export const getNextEnemyShotIndex = selector({
   key: "nextEnemyShot",
   get: ({ get }) => get(lastEnemyShot) + 1,
+});
+
+export const getHasLost = selector({
+  key: "getHasLost",
+  get: ({ get }) => get(defenceBar) <= 0,
 });
 
 export const selectElemFamily = selectorFamily({

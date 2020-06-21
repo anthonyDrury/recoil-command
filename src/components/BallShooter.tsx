@@ -1,10 +1,12 @@
 import React, { useRef, useState } from "react";
 import { useSetRecoilState } from "recoil";
-import { setNextShot } from "../state/selectors";
+import { setNextShot, getHasLost } from "../state/selectors";
+import { useRecoilValue } from "recoil";
 
 function BallShooter(props: { debugMode?: boolean }) {
   const setShot = useSetRecoilState(setNextShot);
   const shooterRef = useRef<HTMLDivElement | null>(null);
+  const hasLost = useRecoilValue(getHasLost);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
 
   /*
@@ -15,6 +17,9 @@ function BallShooter(props: { debugMode?: boolean }) {
     the balls direction.
   */
   function handleShoot() {
+    if (hasLost) {
+      return;
+    }
     const preWidth =
       mousePosition.x - (shooterRef.current?.offsetLeft ?? 0) - 100;
     const veerLeft = preWidth < 0;
@@ -38,8 +43,8 @@ function BallShooter(props: { debugMode?: boolean }) {
     setShot({
       x: mousePosition.x,
       y: mousePosition.y,
-      xIncrement: (90 - angle) / 90,
-      yIncrement: angle / 90,
+      xIncrement: ((90 - angle) / 90) * 2,
+      yIncrement: (angle / 90) * 2,
       veerLeft: veerLeft,
     });
   }
