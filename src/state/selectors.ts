@@ -13,7 +13,6 @@ import {
 import { isSameItem, determineCollisions } from "../helpers/atom.utils";
 import { item } from "../types/atom.types";
 import { getNumberInRange } from "../helpers/common.utils";
-import DefenceBar from "../components/DefenceBar";
 
 export const getActiveItems = selector({
   key: "filteredTodoListState",
@@ -64,8 +63,10 @@ export const updateItemsPositions = selector({
         // limit power to 100
         set(powerBar, (val) => getNumberInRange(val + 5, 0, 100));
 
-        // Since per collision there us two items
-        set(points, (val) => val + 0.5);
+        if (!get(getHasLost)) {
+          // Since per collision there us two items
+          set(points, (val) => val + 0.5);
+        }
       }
       // If enemy shot collides with defence, adjust defence
       else if (
