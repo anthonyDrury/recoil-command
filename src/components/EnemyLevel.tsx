@@ -1,9 +1,9 @@
 import React from "react";
-import { enemyLevel } from "../state/atoms";
 import { useRecoilValue } from "recoil";
+import { getReadableLevel } from "../state/selectors";
 
 function EnemyLevel() {
-  const level = useRecoilValue(enemyLevel);
+  const level = useRecoilValue(getReadableLevel);
 
   return (
     <div
@@ -15,7 +15,7 @@ function EnemyLevel() {
         fontSize: "3rem",
       }}
     >
-      Level {Math.round(level * 100)}
+      Level {level}
     </div>
   );
 }

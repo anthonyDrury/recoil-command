@@ -160,8 +160,13 @@ export const getNextEnemyShotIndex = selector({
   get: ({ get }) => get(lastEnemyShot) + 1,
 });
 
+export const getReadableLevel = selector({
+  key: "getReadableLevel",
+  get: ({ get }) => Math.round(get(enemyLevel) * 100),
+});
+
 export const getHasLost = selector({
-  key: "getHasLost",
+  key: "getLevel",
   get: ({ get }) => get(defenceBar) <= 0,
 });
 
