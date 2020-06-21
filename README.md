@@ -1,10 +1,19 @@
-This project was bootstrapped with [Create React App](https://github.com/facebook/create-react-app).
+# Protectorb
 
-## Available Scripts
+[https://proctectorb.vercel.app/](https://proctectorb.vercel.app/)
+Protectorb was inspired by Missile Command, an Atari game released in 1980.
 
-In the project directory, you can run:
+Protectorb sees users firing blue orbs at incoming red orbs in order to defend their blue line. When the line is hit by the incoming red orbs the players loses points. Though if the player hits the red orbs they will gain points and destroy both blue and red orb. Though keep track of your yellow power bar! Without it you can't shoot.
 
-### `yarn start`
+## Developing locally
+
+In the project directory, you can install with your preferred package manager like:
+
+### `yarn|npm install`
+
+Installs necessary packages for local development and execution.
+
+### `yarn|npm start`
 
 Runs the app in the development mode.<br />
 Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
@@ -12,33 +21,10 @@ Open [http://localhost:3000](http://localhost:3000) to view it in the browser.
 The page will reload if you make edits.<br />
 You will also see any lint errors in the console.
 
-### `yarn test`
+## Technical breakdown
 
-Launches the test runner in the interactive watch mode.<br />
-See the section about [running tests](https://facebook.github.io/create-react-app/docs/running-tests) for more information.
+This project was mostly developed as an experiment for trying the experimental state management [recoil.js by facebook](https://github.com/facebookexperimental/Recoil/blob/master/README.md). The fact that components only re-render when the data they are subscribed to changes made me think it could potentially be valuable in JS game development.
 
-### `yarn build`
+The project worked a lot better than I initially believed. With the project being able to run fairly well even when I was rendering all visible items new positions every 50ms.
 
-Builds the app for production to the `build` folder.<br />
-It correctly bundles React in production mode and optimizes the build for the best performance.
-
-The build is minified and the filenames include the hashes.<br />
-Your app is ready to be deployed!
-
-See the section about [deployment](https://facebook.github.io/create-react-app/docs/deployment) for more information.
-
-### `yarn eject`
-
-**Note: this is a one-way operation. Once you `eject`, you can’t go back!**
-
-If you aren’t satisfied with the build tool and configuration choices, you can `eject` at any time. This command will remove the single build dependency from your project.
-
-Instead, it will copy all the configuration files and the transitive dependencies (webpack, Babel, ESLint, etc) right into your project so you have full control over them. All of the commands except `eject` will still work, but they will point to the copied scripts so you can tweak them. At this point you’re on your own.
-
-You don’t have to ever use `eject`. The curated feature set is suitable for small and middle deployments, and you shouldn’t feel obligated to use this feature. However we understand that this tool wouldn’t be useful if you couldn’t customize it when you are ready for it.
-
-## Learn More
-
-You can learn more in the [Create React App documentation](https://facebook.github.io/create-react-app/docs/getting-started).
-
-To learn React, check out the [React documentation](https://reactjs.org/).
+To improve efficiency, when an item moves out of view it is no longer rendered by react and the rendering function does not take them into account. Though the `atom` still exists, as currently there is no way to delete atoms. This would mean there is a memory leak, and theoretically if the player plays for a long time the applications performance will dwindle.
