@@ -14,7 +14,7 @@ function ShotItem(props: { itemKey: number }) {
         position: "absolute",
         top: shot.y,
         left: shot.x,
-        zIndex: 200,
+        zIndex: 9,
         backgroundColor: "blue",
         width: 30,
         height: 30,

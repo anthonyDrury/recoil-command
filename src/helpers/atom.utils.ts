@@ -1,5 +1,4 @@
 import { itemReference, item } from "../types/atom.types";
-import { itemFamily } from "../state/atoms";
 import { getHeight } from "./window.utils";
 
 export function calculateNextItemState(item: item) {
@@ -38,7 +37,8 @@ function hasHitDefence(item: item) {
 // determine if items are within range of each other
 // if so remove them from active list
 export function determineCollisions(items: item[]) {
-  const collisions: Set<itemReference> = new Set();
+  const shotCollisions: Map<string, itemReference> = new Map();
+  const defenceCollisions: Map<string, itemReference> = new Map();
   const newStates: item[] = [];
   let isDefenceHit: boolean = false;
 
@@ -50,6 +50,8 @@ export function determineCollisions(items: item[]) {
   // Since this is a range and not exact
   // we can't do this in one loop
   newStates.forEach((item) => {
+    let shotCollided: boolean = false;
+    let defenceCollided: boolean = false;
     newStates.forEach((otherItem) => {
       // If items are different types (enemy and shot)
       // If items are not the same item
@@ -59,12 +61,17 @@ export function determineCollisions(items: item[]) {
         !isSameItem(item, otherItem) &&
         hasCollided(item, otherItem)
       ) {
-        collisions.add(item);
+        shotCollided = true;
       } else if (hasHitDefence(item)) {
-        collisions.add(item);
-        isDefenceHit = true;
+        defenceCollided = true;
       }
     });
+    if (shotCollided) {
+      shotCollisions.set(`${item.type}_${item.index}`, item);
+    } else if (defenceCollided) {
+      defenceCollisions.set(`${item.type}_${item.index}`, item);
+      isDefenceHit = true;
+    }
   });
-  return { collisions, newStates, isDefenceHit };
+  return { shotCollisions, defenceCollisions, newStates, isDefenceHit };
 }

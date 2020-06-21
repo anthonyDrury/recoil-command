@@ -33,6 +33,12 @@ export const powerBar = atom<number>({
   default: 100,
 });
 
+// Player points accumulated
+export const points = atom<number>({
+  key: "points",
+  default: 0,
+});
+
 // to keep track of the last player atom shot
 export const lastShot = atom<number>({
   key: "lastShot",
