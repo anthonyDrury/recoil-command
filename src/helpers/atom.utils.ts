@@ -28,14 +28,14 @@ export function isSameItemOrTrailFor(
   );
 }
 
-// checks if x and y are within 25px of each other
+// checks if x and y are within range of each other
 function hasCollided(a: item, b: item) {
   const xRange = a.x - b.x;
   const yRange = a.y - b.y;
   const isXInRange =
-    (xRange < 0 && xRange > -25) || (xRange > 0 && xRange < 25);
+    (xRange < 0 && xRange > -15) || (xRange > 0 && xRange < 15);
   const isYInRange =
-    (yRange < 0 && yRange > -25) || (yRange > 0 && yRange < 25);
+    (yRange < 0 && yRange > -15) || (yRange > 0 && yRange < 15);
   return isXInRange && isYInRange;
 }
 

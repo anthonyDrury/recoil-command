@@ -15,11 +15,10 @@ function EnemyItem(props: { itemKey: number }) {
         top: enemyShot.y,
         left: enemyShot.x,
         zIndex: 9,
-        backgroundColor: "red",
-        background: "linear-gradient(pink, red)",
-        width: 30,
-        height: 30,
-        borderRadius: 15,
+        backgroundColor: "black",
+        width: 5,
+        height: 5,
+        borderRadius: "100%",
       }}
     />
   );
