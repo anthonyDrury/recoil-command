@@ -1,7 +1,7 @@
-import { itemReference, item } from "../types/atom.types";
+import { itemReference, item, items, movingItems } from "../types/atom.types";
 import { getHeight } from "./window.utils";
 
-export function calculateNextItemState(item: item) {
+export function calculateNextItemState(item: movingItems) {
   return {
     ...item,
     x: item.veerLeft
@@ -11,14 +11,14 @@ export function calculateNextItemState(item: item) {
   };
 }
 
-export function isSameItem(x: item | itemReference, y: item | itemReference) {
+export function isSameItem(x: items | itemReference, y: items | itemReference) {
   return x.type === y.type && x.index === y.index;
 }
 
 //
 export function isSameItemOrTrailFor(
-  x: item | itemReference,
-  y: item | itemReference
+  x: items | itemReference,
+  y: items | itemReference
 ) {
   return (
     (x.type === y.type ||
@@ -39,7 +39,7 @@ function hasCollided(a: item, b: item) {
   return isXInRange && isYInRange;
 }
 
-function hasHitDefence(item: item) {
+function hasHitDefence(item: items) {
   if (item.type === "SHOT") {
     return false;
   }
@@ -49,10 +49,10 @@ function hasHitDefence(item: item) {
 
 // determine if items are within range of each other
 // if so remove them from active list
-export function determineCollisions(items: item[]) {
+export function determineCollisions(items: movingItems[]) {
   const shotCollisions: Map<string, itemReference> = new Map();
   const defenceCollisions: Map<string, itemReference> = new Map();
-  const newStates: item[] = [];
+  const newStates: movingItems[] = [];
   let isDefenceHit: boolean = false;
 
   // Calculate new states

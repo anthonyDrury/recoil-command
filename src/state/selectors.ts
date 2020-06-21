@@ -1,4 +1,4 @@
-import { selector, selectorFamily, RecoilState } from "recoil";
+import { selector, selectorFamily, RecoilState, RecoilValue } from "recoil";
 import {
   activeItems,
   itemFamily,
@@ -19,7 +19,15 @@ import {
   determineCollisions,
   isSameItemOrTrailFor,
 } from "../helpers/atom.utils";
-import { item, baseItem, itemTrail, movingItemType } from "../types/atom.types";
+import {
+  item,
+  items,
+  itemTrail,
+  movingItemType,
+  movingItems,
+  shotItem,
+  enemyItem,
+} from "../types/atom.types";
 import { getNumberInRange } from "../helpers/common.utils";
 
 export const getActiveItems = selector({
@@ -53,10 +61,8 @@ export const updateItemsPositions = selector({
       .filter((ref) => ref.type !== "ITEM_TRAIL")
       .map((ref) => {
         const atom =
-          ref.type === "ITEM"
-            ? itemFamily(ref.index)
-            : (shotFamily(ref.index) as RecoilState<item>);
-        return get(atom);
+          ref.type === "ITEM" ? itemFamily(ref.index) : shotFamily(ref.index);
+        return get(atom as RecoilValue<shotItem>);
       });
 
     const {
@@ -66,7 +72,7 @@ export const updateItemsPositions = selector({
       isDefenceHit,
     } = determineCollisions(items);
 
-    newStates.forEach((newItem: item) => {
+    newStates.forEach((newItem: items) => {
       // If shot collides, adjust points/power and remove active item
       if (
         shotCollisions.get(`${newItem.type}_${newItem.index}`) !== undefined
@@ -90,10 +96,10 @@ export const updateItemsPositions = selector({
         set(powerBar, (val) => getNumberInRange(val + 0.001, 0, 100));
 
         if (newItem.type === "ITEM") {
-          set(itemFamily(newItem.index), newItem as item<"ITEM">);
+          set(itemFamily(newItem.index), newItem as enemyItem);
           set(setItemTrail, newItem);
         } else {
-          set(shotFamily(newItem.index), newItem as item<"SHOT">);
+          set(shotFamily(newItem.index), newItem as shotItem);
         }
       }
     });
@@ -168,7 +174,7 @@ export const setNextShot = selector({
       ...position,
       index: nextShot,
       type: "SHOT",
-    } as item<"SHOT">);
+    } as shotItem);
     set(activeItems, (items) => [...items, { index: nextShot, type: "SHOT" }]);
     set(powerBar, (val) => getNumberInRange(val - 5, 0, 100));
     set(lastShot, nextShot);

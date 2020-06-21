@@ -1,22 +1,38 @@
-export type item<T extends movingItemType = movingItemType> = baseItem & {
+export type item = baseItem & {
   xIncrement: number;
   yIncrement: number;
   veerLeft: boolean;
-  type: T;
 };
 
-export type baseItem<T extends itemType = itemType> = {
+export type baseItem = {
   x: number;
   y: number;
-  type: T;
   index: number;
 };
+
+export type enemyItem = baseItem &
+  item & {
+    type: "ITEM";
+  };
+
+export type shotItem = baseItem &
+  item & {
+    type: "SHOT";
+    target: {
+      x: number;
+      y: number;
+    };
+  };
 
 export type itemTrail = baseItem & {
   type: "ITEM_TRAIL";
   startX: number;
   startY: number;
 };
+
+export type items = itemTrail | enemyItem | shotItem;
+
+export type movingItems = enemyItem | shotItem;
 
 export type itemType = movingItemType | "ITEM_TRAIL";
 

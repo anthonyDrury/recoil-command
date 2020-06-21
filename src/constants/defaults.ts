@@ -1,20 +1,27 @@
-import { item, movingItemType, baseItem, itemTrail } from "../types/atom.types";
+import { itemTrail, enemyItem, shotItem } from "../types/atom.types";
 
-export const getDefaultItem = <T extends movingItemType>(type: T): item<T> => ({
+export const getDefaultEnemyItem = (): enemyItem => ({
   x: 0,
   y: 0,
   xIncrement: 0,
   yIncrement: 0,
   veerLeft: false,
-  type,
+  type: "ITEM",
   index: 0,
 });
 
-export const getDefaultBaseItem = (): baseItem<"ITEM_TRAIL"> => ({
+export const getDefaultShotItem = (): shotItem => ({
   x: 0,
   y: 0,
-  type: "ITEM_TRAIL",
+  xIncrement: 0,
+  yIncrement: 0,
+  veerLeft: false,
+  type: "SHOT",
   index: 0,
+  target: {
+    x: 0,
+    y: 0,
+  },
 });
 
 export const getDefaultItemTrail = (): itemTrail => ({
