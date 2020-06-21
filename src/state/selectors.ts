@@ -1,4 +1,4 @@
-import { selector, selectorFamily, RecoilState } from "recoil";
+import { selector, selectorFamily, RecoilState, RecoilValue } from "recoil";
 import {
   activeItems,
   itemFamily,
@@ -13,13 +13,24 @@ import {
   enemyLevel,
   itemTrailFamily,
   lastEnemyTrail,
+  playerExplosionFamily,
+  lastExplosion,
 } from "./atoms";
 import {
   isSameItem,
   determineCollisions,
   isSameItemOrTrailFor,
 } from "../helpers/atom.utils";
-import { item, baseItem, itemTrail, movingItemType } from "../types/atom.types";
+import {
+  item,
+  items,
+  itemTrail,
+  movingItemType,
+  movingItems,
+  shotItem,
+  enemyItem,
+  explosionItem,
+} from "../types/atom.types";
 import { getNumberInRange } from "../helpers/common.utils";
 
 export const getActiveItems = selector({
@@ -50,50 +61,84 @@ export const updateItemsPositions = selector({
     }
     const itemIDs = get(activeItems);
     const items = itemIDs
-      .filter((ref) => ref.type !== "ITEM_TRAIL")
+      .filter(
+        (ref) =>
+          ref.type === "ITEM" || ref.type === "SHOT" || ref.type === "EXPLOSION"
+      )
       .map((ref) => {
         const atom =
           ref.type === "ITEM"
             ? itemFamily(ref.index)
-            : (shotFamily(ref.index) as RecoilState<item>);
-        return get(atom);
+            : ref.type === "SHOT"
+            ? shotFamily(ref.index)
+            : playerExplosionFamily(ref.index);
+        return get(atom as RecoilValue<shotItem>);
       });
 
     const {
-      shotCollisions,
+      targetCollisions,
       defenceCollisions,
+      missileCollisions,
       newStates,
       isDefenceHit,
     } = determineCollisions(items);
 
-    newStates.forEach((newItem: item) => {
-      // If shot collides, adjust points/power and remove active item
+    newStates.forEach((newItem: items) => {
+      // If shot reaches target, adjust points/power and removes active item
+      // sets explosion
       if (
-        shotCollisions.get(`${newItem.type}_${newItem.index}`) !== undefined
+        newItem.type === "SHOT" &&
+        targetCollisions.get(`${newItem.type}_${newItem.index}`) !== undefined
       ) {
-        shotCollisions.delete(`${newItem.type}_${newItem.index}`);
+        targetCollisions.delete(`${newItem.type}_${newItem.index}`);
+        // remove player shot
         set(removeActiveItem, newItem);
-
         // limit power to 100
         set(powerBar, (val) => getNumberInRange(val + 10, 0, 100));
 
-        // Since per collision there us two items
-        set(points, (val) => val + 0.5);
+        // set explosion in last position
+        set(setExplosion, newItem);
       }
       // If enemy shot collides with defence, adjust defence
       else if (
+        newItem.type === "ITEM" &&
         defenceCollisions.get(`${newItem.type}_${newItem.index}`) !== undefined
       ) {
         set(removeActiveItem, newItem);
-        shotCollisions.delete(`${newItem.type}_${newItem.index}`);
+      }
+      // If enemy shot has hit explosion
+      else if (
+        newItem.type === "ITEM" &&
+        missileCollisions.get(`${newItem.type}_${newItem.index}`) !== undefined
+      ) {
+        missileCollisions.delete(`${newItem.type}_${newItem.index}`);
+        set(removeActiveItem, newItem);
+        set(points, (val) => val + 1);
       } else {
         set(powerBar, (val) => getNumberInRange(val + 0.001, 0, 100));
+        switch (newItem.type) {
+          case "ITEM":
+            set(itemFamily(newItem.index), newItem as enemyItem);
+            set(setItemTrail, newItem);
+            break;
+          case "SHOT":
+            set(shotFamily(newItem.index), newItem as shotItem);
+            break;
+          case "EXPLOSION":
+            set(playerExplosionFamily(newItem.index), (exp: explosionItem) => {
+              const newTimer = exp.timer - 1;
 
-        if (newItem.type === "ITEM") {
-          set(itemFamily(newItem.index), newItem as item<"ITEM">);
-          set(setItemTrail, newItem);
-        } else {
-          set(shotFamily(newItem.index), newItem as item<"SHOT">);
+              if (newTimer < 1) {
+                set(removeActiveItem, newItem);
+              }
+              return {
+                ...exp,
+                timer: newTimer,
+              };
+            });
+            break;
+          default:
+            break;
         }
       }
     });
@@ -168,7 +213,7 @@ export const setNextShot = selector({
       ...position,
       index: nextShot,
       type: "SHOT",
-    } as item<"SHOT">);
+    } as shotItem);
     set(activeItems, (items) => [...items, { index: nextShot, type: "SHOT" }]);
     set(powerBar, (val) => getNumberInRange(val - 5, 0, 100));
     set(lastShot, nextShot);
@@ -190,9 +235,40 @@ export const setEnemyShot = selector({
   },
 });
 
+export const setExplosion = selector({
+  key: "setNextExplosion",
+  get: () => {},
+  set: ({ get, set }, item: any) => {
+    let newExplosion = 0;
+    set(lastExplosion, (num) => {
+      newExplosion = num + 1;
+      return num + 1;
+    });
+    set(
+      playerExplosionFamily(newExplosion),
+      (): explosionItem => ({
+        index: newExplosion,
+        x: item.x,
+        y: item.y,
+        timer: 60,
+        type: "EXPLOSION",
+      })
+    );
+    set(activeItems, (items) => [
+      ...items,
+      { index: newExplosion, type: "EXPLOSION" },
+    ]);
+  },
+});
+
 export const getNextShotIndex = selector({
   key: "nextShot",
   get: ({ get }) => get(lastShot) + 1,
+});
+
+export const getNextExplosionIndex = selector({
+  key: "nextExplosion",
+  get: ({ get }) => get(lastExplosion) + 1,
 });
 
 export const getNextEnemyShotIndex = selector({

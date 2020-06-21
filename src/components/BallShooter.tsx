@@ -21,14 +21,20 @@ function BallShooter(props: { debugMode?: boolean }) {
       return;
     }
     const preWidth =
-      mousePosition.x - (shooterRef.current?.offsetLeft ?? 0) - 100;
+      mousePosition.x - (shooterRef.current?.getBoundingClientRect().left ?? 0);
     const veerLeft = preWidth < 0;
     const width = Math.abs(preWidth);
     const height = Math.abs(
-      mousePosition.y - (shooterRef.current?.offsetTop ?? 0) - 100
+      mousePosition.y - (shooterRef.current?.getBoundingClientRect().top ?? 0)
     );
     const oa = height / width;
     const angle = Math.atan(oa) * (180 / Math.PI);
+
+    const newWidth = 100 * Math.sin(angle);
+    const newHeight = Math.sqrt(Math.pow(100, 2) - Math.pow(newWidth, 2));
+
+    console.log(newWidth);
+    console.log(newHeight);
 
     if (props.debugMode) {
       console.log(`height: ${height}`);
@@ -41,11 +47,15 @@ function BallShooter(props: { debugMode?: boolean }) {
       console.log(`yIncrement: ${angle / 90}`);
     }
     setShot({
-      x: (shooterRef.current?.getBoundingClientRect().left ?? 0) + 80,
+      x: shooterRef.current?.getBoundingClientRect().left ?? 0,
       y: shooterRef.current?.getBoundingClientRect().top ?? 0,
-      xIncrement: ((90 - angle) / 90) * 2,
-      yIncrement: (angle / 90) * 2,
+      xIncrement: ((90 - angle) / 90) * 4,
+      yIncrement: (angle / 90) * 4,
       veerLeft: veerLeft,
+      target: {
+        x: mousePosition.x,
+        y: mousePosition.y,
+      },
     });
   }
 
@@ -73,7 +83,6 @@ function BallShooter(props: { debugMode?: boolean }) {
       onClick={handleShoot}
     >
       <div
-        ref={shooterRef}
         style={{
           position: "absolute",
           left: "calc(50% - 100px)",
@@ -87,19 +96,27 @@ function BallShooter(props: { debugMode?: boolean }) {
           zIndex: 1,
         }}
       >
+        <div
+          ref={shooterRef}
+          style={{
+            position: "absolute",
+            bottom: 100,
+            right: 100,
+          }}
+        />
         {props.debugMode ? (
           <div
             style={{
               position: "absolute",
-              maxHeight: "200px",
-              maxWidth: "200px",
-              backgroundColor: props.debugMode ? "blue" : "",
-              bottom: 0,
+              backgroundColor: "blue",
+              bottom: 100,
               height: Math.abs(
-                mousePosition.y - (shooterRef.current?.offsetTop ?? 0) - 100
+                mousePosition.y -
+                  (shooterRef.current?.getBoundingClientRect().top ?? 0)
               ),
               width: Math.abs(
-                mousePosition.x - (shooterRef.current?.offsetLeft ?? 0) - 100
+                mousePosition.x -
+                  (shooterRef.current?.getBoundingClientRect().left ?? 0)
               ),
               left: `calc(50% + ${triangleWidth()}px)`,
               zIndex: 100,
