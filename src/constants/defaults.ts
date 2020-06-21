@@ -1,4 +1,9 @@
-import { itemTrail, enemyItem, shotItem } from "../types/atom.types";
+import {
+  itemTrail,
+  enemyItem,
+  shotItem,
+  explosionItem,
+} from "../types/atom.types";
 
 export const getDefaultEnemyItem = (): enemyItem => ({
   x: 0,
@@ -31,4 +36,13 @@ export const getDefaultItemTrail = (): itemTrail => ({
   index: 0,
   startX: -1,
   startY: -1,
+});
+
+export const getDefaultExplosion = (): explosionItem => ({
+  x: -1,
+  y: -1,
+  type: "EXPLOSION",
+  index: 0,
+  // three seconds
+  timer: 60,
 });

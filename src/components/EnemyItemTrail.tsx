@@ -22,17 +22,6 @@ function EnemyItemTrail(props: { itemKey: number }) {
         stroke="red"
       />
     </svg>
-    // <div
-    //   style={{
-    //     top: shotTrail.y,
-    //     left: shotTrail.x,
-    //     zIndex: 8,
-    //     backgroundColor: "red",
-    //     width: 1,
-    //     height: 1,
-    //     borderRadius: 1,
-    //   }}
-    // />
   );
 }
 

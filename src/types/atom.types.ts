@@ -10,6 +10,11 @@ export type baseItem = {
   index: number;
 };
 
+export type explosionItem = baseItem & {
+  type: "EXPLOSION";
+  timer: number;
+};
+
 export type enemyItem = baseItem &
   item & {
     type: "ITEM";
@@ -30,11 +35,11 @@ export type itemTrail = baseItem & {
   startY: number;
 };
 
-export type items = itemTrail | enemyItem | shotItem;
+export type items = itemTrail | explosionItem | enemyItem | shotItem;
 
 export type movingItems = enemyItem | shotItem;
 
-export type itemType = movingItemType | "ITEM_TRAIL";
+export type itemType = movingItemType | "EXPLOSION" | "ITEM_TRAIL";
 
 export type movingItemType = "SHOT" | "ITEM";
 

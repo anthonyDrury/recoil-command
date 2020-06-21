@@ -4,6 +4,7 @@ import ShotItem from "./ShotItem";
 import EnemyItem from "./EnemyItem";
 import { useRecoilValue } from "recoil";
 import EnemyItemTrail from "./EnemyItemTrail";
+import Explosion from "./Explosion";
 
 function ShotRenderer() {
   const items = useRecoilValue(activeItems);
@@ -19,6 +20,8 @@ function ShotRenderer() {
               return <EnemyItem itemKey={ref.index} />;
             case "ITEM_TRAIL":
               return <EnemyItemTrail itemKey={ref.index} />;
+            case "EXPLOSION":
+              return <Explosion itemKey={ref.index} />;
             default:
               return null;
           }

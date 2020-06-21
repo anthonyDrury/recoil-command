@@ -6,11 +6,13 @@ import {
   itemTrail,
   enemyItem,
   shotItem,
+  explosionItem,
 } from "../types/atom.types";
 import {
   getDefaultItemTrail,
   getDefaultEnemyItem,
   getDefaultShotItem,
+  getDefaultExplosion,
 } from "../constants/defaults";
 
 // How often we should refresh the game board
@@ -74,6 +76,12 @@ export const lastEnemyTrail = atom<number>({
   default: 0,
 });
 
+// to keep track of the last explosion
+export const lastExplosion = atom<number>({
+  key: "lastExplosion",
+  default: 0,
+});
+
 // keys of active items on the board
 export const activeItems = atom<itemReference[]>({
   key: "activeKeys",
@@ -93,4 +101,9 @@ export const shotFamily = atomFamily<shotItem, number>({
 export const itemTrailFamily = atomFamily<itemTrail, number>({
   key: "shotTrail",
   default: getDefaultItemTrail(),
+});
+
+export const playerExplosionFamily = atomFamily<explosionItem, number>({
+  key: "explosion",
+  default: getDefaultExplosion(),
 });

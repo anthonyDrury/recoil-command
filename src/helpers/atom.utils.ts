@@ -1,4 +1,12 @@
-import { itemReference, item, items, movingItems } from "../types/atom.types";
+import {
+  itemReference,
+  item,
+  items,
+  movingItems,
+  shotItem,
+  explosionItem,
+  enemyItem,
+} from "../types/atom.types";
 import { getHeight } from "./window.utils";
 
 export function calculateNextItemState(item: movingItems) {
@@ -29,7 +37,18 @@ export function isSameItemOrTrailFor(
 }
 
 // checks if x and y are within range of each other
-function hasCollided(a: item, b: item) {
+function hasHitTarget(a: shotItem) {
+  const xRange = a.x - a.target.x;
+  const yRange = a.y - a.target.y;
+  const isXInRange =
+    (xRange < 0 && xRange > -50) || (xRange > 0 && xRange < 50);
+  const isYInRange =
+    (yRange < 0 && yRange > -50) || (yRange > 0 && yRange < 50);
+  return isXInRange && isYInRange;
+}
+
+// checks if enemyShot has collided with explosion
+function hasCollided(a: enemyItem, b: explosionItem) {
   const xRange = a.x - b.x;
   const yRange = a.y - b.y;
   const isXInRange =
@@ -40,51 +59,56 @@ function hasCollided(a: item, b: item) {
 }
 
 function hasHitDefence(item: items) {
-  if (item.type === "SHOT") {
-    return false;
+  if (item.type === "ITEM") {
+    const height = getHeight() - 15;
+    return item.y >= height;
   }
-  const height = getHeight() - 30;
-  return item.y >= height;
+  return false;
 }
 
-// determine if items are within range of each other
-// if so remove them from active list
-export function determineCollisions(items: movingItems[]) {
-  const shotCollisions: Map<string, itemReference> = new Map();
+// determine if items have hit the defence, or their target
+// if so remove them from active list and set collisions
+export function determineCollisions(items: Array<movingItems | explosionItem>) {
+  const targetCollisions: Map<string, itemReference> = new Map();
   const defenceCollisions: Map<string, itemReference> = new Map();
-  const newStates: movingItems[] = [];
+  const missileCollisions: Map<string, itemReference> = new Map();
+  const newStates: Array<movingItems | explosionItem> = [];
+  const explosions: explosionItem[] = [];
   let isDefenceHit: boolean = false;
 
   // Calculate new states
   items.forEach((item) => {
-    newStates.push(calculateNextItemState(item));
-  });
-
-  // Since this is a range and not exact
-  // we can't do this in one loop
-  newStates.forEach((item) => {
-    let shotCollided: boolean = false;
-    let defenceCollided: boolean = false;
-    newStates.forEach((otherItem) => {
-      // If items are different types (enemy and shot)
-      // If items are not the same item
-      // If items have collided
-      if (
-        item.type !== otherItem.type &&
-        !isSameItem(item, otherItem) &&
-        hasCollided(item, otherItem)
-      ) {
-        shotCollided = true;
-      } else if (hasHitDefence(item)) {
-        defenceCollided = true;
-      }
-    });
-    if (shotCollided) {
-      shotCollisions.set(`${item.type}_${item.index}`, item);
-    } else if (defenceCollided) {
-      defenceCollisions.set(`${item.type}_${item.index}`, item);
-      isDefenceHit = true;
+    if (item.type !== "EXPLOSION") {
+      newStates.push(calculateNextItemState(item));
+    } else {
+      explosions.push(item);
+      newStates.push(item);
     }
   });
-  return { shotCollisions, defenceCollisions, newStates, isDefenceHit };
+
+  newStates.forEach((item) => {
+    let explosionCollided: boolean = false;
+
+    if (item.type === "SHOT" && hasHitTarget(item)) {
+      targetCollisions.set(`${item.type}_${item.index}`, item);
+    } else if (item.type === "ITEM") {
+      explosionCollided =
+        explosions.filter((explosion) => hasCollided(item, explosion)).length >
+        0;
+      if (explosionCollided) {
+        missileCollisions.set(`${item.type}_${item.index}`, item);
+      }
+      if (hasHitDefence(item)) {
+        defenceCollisions.set(`${item.type}_${item.index}`, item);
+        isDefenceHit = true;
+      }
+    }
+  });
+  return {
+    targetCollisions,
+    defenceCollisions,
+    missileCollisions,
+    newStates,
+    isDefenceHit,
+  };
 }
