@@ -1,9 +1,10 @@
 import React from "react";
 import { useRecoilValue } from "recoil";
-import { points } from "../state/atoms";
+import { points, enemyLevel } from "../state/atoms";
 
 function GameOver() {
   const pointTally = useRecoilValue(points);
+  const level = useRecoilValue(enemyLevel);
   return (
     <div
       style={{
@@ -27,6 +28,7 @@ function GameOver() {
       >
         <h2>You did your best!</h2>
         <p>Your points total was: {pointTally}</p>
+        <p>You got up to: {level}</p>
       </div>
     </div>
   );
