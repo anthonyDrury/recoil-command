@@ -16,6 +16,7 @@ function EnemyItem(props: { itemKey: number }) {
         left: enemyShot.x,
         zIndex: 9,
         backgroundColor: "red",
+        background: "linear-gradient(pink, red)",
         width: 30,
         height: 30,
         borderRadius: 15,

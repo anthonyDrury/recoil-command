@@ -1,23 +1,23 @@
 import React from "react";
-import { points } from "../state/atoms";
+import { enemyLevel } from "../state/atoms";
 import { useRecoilValue } from "recoil";
 
-function PointsTally() {
-  const pointValue = useRecoilValue(points);
+function EnemyLevel() {
+  const level = useRecoilValue(enemyLevel);
 
   return (
     <div
       style={{
         position: "absolute",
-        top: 30,
+        top: 70,
         right: 0,
         zIndex: 10,
         fontSize: "3rem",
       }}
     >
-      {pointValue} Points
+      Level {Math.round(level * 100)}
     </div>
   );
 }
 
-export default PointsTally;
+export default EnemyLevel;

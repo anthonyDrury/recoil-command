@@ -9,10 +9,16 @@ export const gameSpeed = atom<number>({
   default: 50,
 });
 
-// Change the enemy will shoot
+// Change how often the enemy will shoot
 export const enemyLevel = atom<number>({
   key: "enemyLevel",
   default: 0.01,
+});
+
+// Keep track of when the enemy levels up
+export const enemyIncrement = atom<number>({
+  key: "enemyLevelIncrement",
+  default: 0,
 });
 
 // Whether the defence was hit this render
