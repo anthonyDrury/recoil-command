@@ -1,14 +1,15 @@
 import {
   itemReference,
-  item,
   items,
   movingItems,
   shotItem,
   explosionItem,
   enemyItem,
 } from "../types/atom.types";
-import { getHeight } from "./window.utils";
+import { getHeight, getExplosionSize } from "./window.utils";
 
+// Calculates the new positions
+// Taking into consideration it can only move minimum 1px
 export function calculateNextItemState(item: movingItems) {
   return {
     ...item,
@@ -36,7 +37,7 @@ export function isSameItemOrTrailFor(
   );
 }
 
-// checks if x and y are within range of each other
+// checks if player shot has hit target
 function hasHitTarget(a: shotItem) {
   const xRange = a.x - a.target.x;
   const yRange = a.y - a.target.y;
@@ -49,12 +50,20 @@ function hasHitTarget(a: shotItem) {
 
 // checks if enemyShot has collided with explosion
 function hasCollided(a: enemyItem, b: explosionItem) {
+  // Delay before explosion is 'active'
+  if (b.timer > 65) {
+    return false;
+  }
+  const diameter = getExplosionSize(b.timer) / 2;
+  const negativeDiameter = -Math.abs(diameter);
   const xRange = a.x - b.x;
   const yRange = a.y - b.y;
   const isXInRange =
-    (xRange < 0 && xRange > -15) || (xRange > 0 && xRange < 15);
+    (xRange < 0 && xRange > negativeDiameter) ||
+    (xRange > 0 && xRange < diameter);
   const isYInRange =
-    (yRange < 0 && yRange > -15) || (yRange > 0 && yRange < 15);
+    (yRange < 0 && yRange > negativeDiameter) ||
+    (yRange > 0 && yRange < diameter);
   return isXInRange && isYInRange;
 }
 

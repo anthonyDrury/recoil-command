@@ -1,25 +1,30 @@
 import React from "react";
-import { playerExplosionFamily } from "../state/atoms";
+import { explosionFamily } from "../state/atoms";
 import { explosionItem } from "../types/atom.types";
 import { useRecoilValue } from "recoil";
+import { getExplosionSize } from "../helpers/window.utils";
 
 function Explosion(props: { itemKey: number }) {
   const explosion: explosionItem = useRecoilValue(
-    playerExplosionFamily(props.itemKey)
+    explosionFamily(props.itemKey)
   );
-
+  const size = getExplosionSize(explosion.timer);
   return (
-    <div
-      style={{
-        position: "absolute",
-        top: explosion.y,
-        left: explosion.x,
-        width: 30,
-        height: 30,
-        borderRadius: "100%",
-        backgroundColor: explosion.timer & 1 ? "red" : "yellow",
-      }}
-    />
+    <>
+      {explosion.timer <= 60 && (
+        <div
+          style={{
+            position: "absolute",
+            top: explosion.y - size / 2,
+            left: explosion.x - size / 2,
+            width: size,
+            height: size,
+            borderRadius: "100%",
+            backgroundColor: explosion.timer & 1 ? "red" : "yellow",
+          }}
+        />
+      )}
+    </>
   );
 }
 
