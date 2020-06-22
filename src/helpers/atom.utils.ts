@@ -51,7 +51,7 @@ function hasHitTarget(a: shotItem) {
 // checks if enemyShot has collided with explosion
 function hasCollided(a: enemyItem, b: explosionItem) {
   // Delay before explosion is 'active'
-  if (b.timer > 65) {
+  if (b.timer > 30) {
     return false;
   }
   const diameter = getExplosionSize(b.timer) / 2;
