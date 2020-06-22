@@ -96,11 +96,7 @@ function BallShooter(props: { debugMode?: boolean }) {
           ref={shooterRef}
           style={{
             position: "absolute",
-            height: 1,
-            width: 1,
-            backgroundColor: "black",
-            zIndex: 100,
-            bottom: 100,
+            bottom: 0,
             right: 100,
           }}
         />
