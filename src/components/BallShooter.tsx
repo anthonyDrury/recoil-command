@@ -1,12 +1,10 @@
 import React, { useRef, useState } from "react";
 import { useSetRecoilState } from "recoil";
-import { setNextShot, getHasLost, setExplosion } from "../state/selectors";
+import { setNextShot, getHasLost } from "../state/selectors";
 import { useRecoilValue } from "recoil";
-import { explosionItem } from "../types/atom.types";
 
 function BallShooter(props: { debugMode?: boolean }) {
   const setShot = useSetRecoilState(setNextShot);
-  const setMissileExplosion = useSetRecoilState(setExplosion);
   const shooterRef = useRef<HTMLDivElement | null>(null);
   const hasLost = useRecoilValue(getHasLost);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -53,10 +51,6 @@ function BallShooter(props: { debugMode?: boolean }) {
         x: mousePosition.x,
         y: mousePosition.y,
       },
-    });
-    setMissileExplosion({
-      x: mousePosition.x,
-      y: mousePosition.y,
     });
   }
 

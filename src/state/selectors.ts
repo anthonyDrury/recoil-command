@@ -89,7 +89,7 @@ export const updateItemsPositions = selector({
         // remove player shot
         set(removeActiveItem, newItem);
         // limit power to 100
-        set(powerBar, (val) => getNumberInRange(val + 2, 0, 100));
+        set(powerBar, (val) => getNumberInRange(val + 2.5, 0, 100));
       }
       // If enemy shot collides with defence
       // Remove item
@@ -110,7 +110,7 @@ export const updateItemsPositions = selector({
         set(setExplosion, newItem);
         set(points, (val) => val + 1);
       } else {
-        set(powerBar, (val) => getNumberInRange(val + 0.001, 0, 100));
+        set(powerBar, (val) => getNumberInRange(val + 0.002, 0, 100));
         switch (newItem.type) {
           case "ITEM":
             set(itemFamily(newItem.index), newItem as enemyItem);
@@ -203,6 +203,7 @@ export const setNextShot = selector({
       return;
     }
     const nextShot = get(getNextShotIndex);
+    set(setExplosion, { ...position.target });
     set(shotFamily(nextShot), {
       ...position,
       index: nextShot,
@@ -232,7 +233,11 @@ export const setEnemyShot = selector({
 export const setExplosion = selector({
   key: "setNextExplosion",
   get: () => {},
-  set: ({ set }, item: any) => {
+  set: ({ get, set }, item: any) => {
+    const power = get(powerBar);
+    if (power < 5) {
+      return;
+    }
     let newExplosion = 0;
     set(lastExplosion, (num) => {
       newExplosion = num + 1;
