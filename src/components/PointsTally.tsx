@@ -9,7 +9,7 @@ function PointsTally() {
     <div
       style={{
         position: "absolute",
-        top: 30,
+        top: 100,
         right: 0,
         zIndex: 10,
         fontSize: "3rem",

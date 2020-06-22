@@ -9,7 +9,7 @@ function PowerBar() {
     <div
       style={{
         position: "absolute",
-        top: 30,
+        top: 70,
         left: 0,
         height: 30,
         zIndex: 10,

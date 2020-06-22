@@ -11,7 +11,7 @@ function Explosion(props: { itemKey: number }) {
   const size = getExplosionSize(explosion.timer);
   return (
     <>
-      {explosion.timer <= 60 && (
+      {explosion.timer <= 30 && (
         <div
           style={{
             position: "absolute",

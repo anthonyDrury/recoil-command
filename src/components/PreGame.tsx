@@ -29,10 +29,19 @@ function PreGame(props: PreGameProps) {
         <p>A missile command tribute.</p>
         <p>Destroy the missiles before they hit your blue base.</p>
         <p>
-          When a missile hits your defender line you will permanently lose
-          defence points from your blue defender bar (top right).
+          When a missile hits your blue base you will permanently lose defence
+          points from your blue defender bar (top right).
         </p>
         <p>If your defender bar runs out, game over.</p>
+        <p>
+          Press near the missile to shoot them down. Every missile you shoot
+          will subtract from your power bar. If your power bar runs out you
+          can't shoot.
+        </p>
+        <p>
+          Your power bar goes up when you destroy a missile, and a little bit
+          over time.
+        </p>
         <button onClick={props.onStart}>Start Game</button>
       </div>
     </div>
