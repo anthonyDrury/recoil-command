@@ -89,9 +89,10 @@ export const updateItemsPositions = selector({
         // remove player shot
         set(removeActiveItem, newItem);
         // limit power to 100
-        set(powerBar, (val) => getNumberInRange(val + 10, 0, 100));
+        set(powerBar, (val) => getNumberInRange(val + 2, 0, 100));
       }
-      // If enemy shot collides with defence, adjust defence
+      // If enemy shot collides with defence
+      // Remove item
       else if (
         newItem.type === "ITEM" &&
         defenceCollisions.get(`${newItem.type}_${newItem.index}`) !== undefined
@@ -99,6 +100,7 @@ export const updateItemsPositions = selector({
         set(removeActiveItem, newItem);
       }
       // If enemy shot has hit explosion
+      // Remove item, add explosion, and increment points
       else if (
         newItem.type === "ITEM" &&
         missileCollisions.get(`${newItem.type}_${newItem.index}`) !== undefined
@@ -207,7 +209,7 @@ export const setNextShot = selector({
       type: "SHOT",
     } as shotItem);
     set(activeItems, (items) => [...items, { index: nextShot, type: "SHOT" }]);
-    // set(powerBar, (val) => getNumberInRange(val - 5, 0, 100));
+    set(powerBar, (val) => getNumberInRange(val - 5, 0, 100));
     set(lastShot, nextShot);
   },
 });
@@ -242,7 +244,7 @@ export const setExplosion = selector({
         index: newExplosion,
         x: item.x,
         y: item.y,
-        timer: 70,
+        timer: 40,
         type: "EXPLOSION",
       })
     );
