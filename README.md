@@ -28,3 +28,11 @@ This project was mostly developed as an experiment for trying the experimental s
 The project worked a lot better than I initially believed. With the project being able to run fairly well even when I was rendering all visible items new positions every 50ms.
 
 To improve efficiency, when an item moves out of view it is no longer rendered by react and the rendering function does not take them into account. Though the `atom` still exists, as currently there is no way to delete atoms. This would mean there is a memory leak, and theoretically if the player plays for a long time the applications performance will dwindle.
+
+### Takeaways
+
+While atom is very impressive, and when used properly can save a lot of excess rendering, I find it difficult to think it is some magic bullet which now opens the gates for JS game development. Though I can definitely see it having a future in other use cases where lots of elements are required to be rendered at once, acting independently.
+
+Though it will be interesting to watch how efficient this project becomes over time as Recoil.js is updated, I will attempt to stay on top of coming updates to monitor the efficiency gains and will log them here.
+
+As of writing, recoil.js is currently on version 0.0.10, and Recoil-Command is using that latest version.
