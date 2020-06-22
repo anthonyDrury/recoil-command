@@ -21,7 +21,6 @@ import {
   isSameItemOrTrailFor,
 } from "../helpers/atom.utils";
 import {
-  items,
   itemTrail,
   shotItem,
   enemyItem,
@@ -80,7 +79,7 @@ export const updateItemsPositions = selector({
       isDefenceHit,
     } = determineCollisions(items);
 
-    newStates.forEach((newItem: items) => {
+    newStates.forEach((newItem) => {
       // If shot reaches target, adjust points/power and removes active item
       // sets explosion
       if (

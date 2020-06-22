@@ -16,7 +16,7 @@ function GameBoard() {
     return () => {
       clearInterval(interval);
     };
-  }, [intervalMs, hasLost]);
+  }, [intervalMs, hasLost, render]);
 
   return (
     <>

@@ -14,7 +14,6 @@ function DefenceBar() {
         height: 30,
         zIndex: 10,
         width: 300,
-        border: "1px solid black",
       }}
     >
       <div
