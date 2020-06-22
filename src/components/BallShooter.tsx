@@ -1,10 +1,12 @@
 import React, { useRef, useState } from "react";
 import { useSetRecoilState } from "recoil";
-import { setNextShot, getHasLost } from "../state/selectors";
+import { setNextShot, getHasLost, setExplosion } from "../state/selectors";
 import { useRecoilValue } from "recoil";
+import { explosionItem } from "../types/atom.types";
 
 function BallShooter(props: { debugMode?: boolean }) {
   const setShot = useSetRecoilState(setNextShot);
+  const setMissileExplosion = useSetRecoilState(setExplosion);
   const shooterRef = useRef<HTMLDivElement | null>(null);
   const hasLost = useRecoilValue(getHasLost);
   const [mousePosition, setMousePosition] = useState({ x: 0, y: 0 });
@@ -30,38 +32,37 @@ function BallShooter(props: { debugMode?: boolean }) {
     const oa = height / width;
     const angle = Math.atan(oa) * (180 / Math.PI);
 
-    const newWidth = 100 * Math.sin(angle);
-    const newHeight = Math.sqrt(Math.pow(100, 2) - Math.pow(newWidth, 2));
-
-    console.log(newWidth);
-    console.log(newHeight);
-
     if (props.debugMode) {
       console.log(`height: ${height}`);
       console.log(`width: ${width}`);
       console.log(`opp/adj: ${oa}`);
       console.log(`angle: ${angle}`);
       console.log(`veer left: ${veerLeft}`);
-
       console.log(`xIncrement: ${(90 - angle) / 90}`);
       console.log(`yIncrement: ${angle / 90}`);
     }
     setShot({
       x: shooterRef.current?.getBoundingClientRect().left ?? 0,
       y: shooterRef.current?.getBoundingClientRect().top ?? 0,
-      xIncrement: ((90 - angle) / 90) * 4,
-      yIncrement: (angle / 90) * 4,
+      xIncrement: ((90 - angle) / 90) * 30,
+      yIncrement: (angle / 90) * 30,
       veerLeft: veerLeft,
+      xCount: 0,
+      yCount: 0,
       target: {
         x: mousePosition.x,
         y: mousePosition.y,
       },
     });
+    setMissileExplosion({
+      x: mousePosition.x,
+      y: mousePosition.y,
+    });
   }
 
   const triangleWidth = () => {
     const offset =
-      mousePosition.x - (shooterRef.current?.offsetLeft ?? 0) - 100;
+      mousePosition.x - (shooterRef.current?.getBoundingClientRect().left ?? 0);
     return offset < 0 ? offset : 0;
   };
 
@@ -100,6 +101,10 @@ function BallShooter(props: { debugMode?: boolean }) {
           ref={shooterRef}
           style={{
             position: "absolute",
+            height: 1,
+            width: 1,
+            backgroundColor: "black",
+            zIndex: 100,
             bottom: 100,
             right: 100,
           }}
@@ -108,7 +113,7 @@ function BallShooter(props: { debugMode?: boolean }) {
           <div
             style={{
               position: "absolute",
-              backgroundColor: "blue",
+              border: "1px solid blue",
               bottom: 100,
               height: Math.abs(
                 mousePosition.y -

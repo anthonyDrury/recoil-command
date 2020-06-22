@@ -1,8 +1,6 @@
 import { atom, atomFamily } from "recoil";
 import {
-  item,
   itemReference,
-  baseItem,
   itemTrail,
   enemyItem,
   shotItem,
@@ -103,7 +101,7 @@ export const itemTrailFamily = atomFamily<itemTrail, number>({
   default: getDefaultItemTrail(),
 });
 
-export const playerExplosionFamily = atomFamily<explosionItem, number>({
+export const explosionFamily = atomFamily<explosionItem, number>({
   key: "explosion",
   default: getDefaultExplosion(),
 });

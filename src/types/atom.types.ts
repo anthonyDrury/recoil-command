@@ -1,6 +1,8 @@
 export type item = baseItem & {
   xIncrement: number;
   yIncrement: number;
+  xCount: number;
+  yCount: number;
   veerLeft: boolean;
 };
 

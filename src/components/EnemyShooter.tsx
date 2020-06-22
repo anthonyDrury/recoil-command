@@ -27,6 +27,8 @@ function EnemyShooter() {
         // Larger the screen width the larger xIncrement can be
         xIncrement: Math.random() * (0.1 * (width / 192)),
         yIncrement: -Math.abs(Math.random()),
+        xCount: 0,
+        yCount: 0,
         veerLeft: Math.random() > 0.5,
       });
     }

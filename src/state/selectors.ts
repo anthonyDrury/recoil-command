@@ -1,4 +1,4 @@
-import { selector, selectorFamily, RecoilState, RecoilValue } from "recoil";
+import { selector, selectorFamily, RecoilValue } from "recoil";
 import {
   activeItems,
   itemFamily,
@@ -12,21 +12,16 @@ import {
   enemyIncrement,
   enemyLevel,
   itemTrailFamily,
-  lastEnemyTrail,
-  playerExplosionFamily,
+  explosionFamily,
   lastExplosion,
 } from "./atoms";
 import {
-  isSameItem,
   determineCollisions,
   isSameItemOrTrailFor,
 } from "../helpers/atom.utils";
 import {
-  item,
   items,
   itemTrail,
-  movingItemType,
-  movingItems,
   shotItem,
   enemyItem,
   explosionItem,
@@ -71,7 +66,7 @@ export const updateItemsPositions = selector({
             ? itemFamily(ref.index)
             : ref.type === "SHOT"
             ? shotFamily(ref.index)
-            : playerExplosionFamily(ref.index);
+            : explosionFamily(ref.index);
         return get(atom as RecoilValue<shotItem>);
       });
 
@@ -95,9 +90,6 @@ export const updateItemsPositions = selector({
         set(removeActiveItem, newItem);
         // limit power to 100
         set(powerBar, (val) => getNumberInRange(val + 10, 0, 100));
-
-        // set explosion in last position
-        set(setExplosion, newItem);
       }
       // If enemy shot collides with defence, adjust defence
       else if (
@@ -113,6 +105,7 @@ export const updateItemsPositions = selector({
       ) {
         missileCollisions.delete(`${newItem.type}_${newItem.index}`);
         set(removeActiveItem, newItem);
+        set(setExplosion, newItem);
         set(points, (val) => val + 1);
       } else {
         set(powerBar, (val) => getNumberInRange(val + 0.001, 0, 100));
@@ -125,9 +118,8 @@ export const updateItemsPositions = selector({
             set(shotFamily(newItem.index), newItem as shotItem);
             break;
           case "EXPLOSION":
-            set(playerExplosionFamily(newItem.index), (exp: explosionItem) => {
+            set(explosionFamily(newItem.index), (exp: explosionItem) => {
               const newTimer = exp.timer - 1;
-
               if (newTimer < 1) {
                 set(removeActiveItem, newItem);
               }
@@ -215,7 +207,7 @@ export const setNextShot = selector({
       type: "SHOT",
     } as shotItem);
     set(activeItems, (items) => [...items, { index: nextShot, type: "SHOT" }]);
-    set(powerBar, (val) => getNumberInRange(val - 5, 0, 100));
+    // set(powerBar, (val) => getNumberInRange(val - 5, 0, 100));
     set(lastShot, nextShot);
   },
 });
@@ -238,19 +230,19 @@ export const setEnemyShot = selector({
 export const setExplosion = selector({
   key: "setNextExplosion",
   get: () => {},
-  set: ({ get, set }, item: any) => {
+  set: ({ set }, item: any) => {
     let newExplosion = 0;
     set(lastExplosion, (num) => {
       newExplosion = num + 1;
       return num + 1;
     });
     set(
-      playerExplosionFamily(newExplosion),
+      explosionFamily(newExplosion),
       (): explosionItem => ({
         index: newExplosion,
         x: item.x,
         y: item.y,
-        timer: 60,
+        timer: 70,
         type: "EXPLOSION",
       })
     );

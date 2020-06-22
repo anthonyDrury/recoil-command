@@ -7,7 +7,6 @@ import { item } from "../types/atom.types";
 function ShotItem(props: { itemKey: number }) {
   const shot: item = useRecoilValue(shotFamily(props.itemKey));
   useIsActive(shot);
-
   return (
     <div
       style={{

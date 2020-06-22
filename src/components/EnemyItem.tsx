@@ -7,13 +7,12 @@ import { item } from "../types/atom.types";
 function EnemyItem(props: { itemKey: number }) {
   const enemyShot: item = useRecoilValue(itemFamily(props.itemKey));
   useIsActive(enemyShot);
-
   return (
     <div
       style={{
         position: "absolute",
-        top: enemyShot.y,
-        left: enemyShot.x,
+        top: enemyShot.y - 2.5,
+        left: enemyShot.x - 2.5,
         zIndex: 9,
         backgroundColor: "black",
         width: 5,
