@@ -3,9 +3,10 @@ import {
   enemyItem,
   shotItem,
   explosionItem,
+  shotTrail,
 } from "../types/atom.types";
 
-export const getDefaultEnemyItem = (): enemyItem => ({
+export const defaultEnemyItem: enemyItem = {
   x: 0,
   y: 0,
   xIncrement: 0,
@@ -15,9 +16,9 @@ export const getDefaultEnemyItem = (): enemyItem => ({
   veerLeft: false,
   type: "ITEM",
   index: 0,
-});
+};
 
-export const getDefaultShotItem = (): shotItem => ({
+export const defaultShotItem: shotItem = {
   x: 0,
   y: 0,
   xIncrement: 0,
@@ -31,22 +32,31 @@ export const getDefaultShotItem = (): shotItem => ({
     x: 0,
     y: 0,
   },
-});
+  increment: 10,
+};
 
-export const getDefaultItemTrail = (): itemTrail => ({
+export const defaultItemTrail: itemTrail = {
   x: -1,
   y: -1,
   type: "ITEM_TRAIL",
   index: 0,
   startX: -1,
   startY: -1,
-});
+};
 
-export const getDefaultExplosion = (): explosionItem => ({
+export const defaultShotTrail: shotTrail = {
+  x: -1,
+  y: -1,
+  type: "SHOT_TRAIL",
+  index: 0,
+  startX: -1,
+  startY: -1,
+};
+
+export const defaultExplosion: explosionItem = {
   x: -1,
   y: -1,
   type: "EXPLOSION",
   index: 0,
-  // three seconds
-  timer: 60,
-});
+  timer: 40,
+};

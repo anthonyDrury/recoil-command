@@ -10,6 +10,7 @@ body {
 html,
 body {
   overflow: hidden;
+  background-color: black;
   height: 100%;
 }
 
