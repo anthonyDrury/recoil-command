@@ -26,18 +26,11 @@ function PreGame(props: PreGameProps) {
         }}
       >
         <h1>Protectorb</h1>
-        <p>Click the grey semi-circle to shoot.</p>
+        <p>A missile command tribute.</p>
+        <p>Destroy the missiles before they hit your blue base.</p>
         <p>
-          Hit the red orbs before they hit your blue defender line at the
-          bottom. Doing so will get you 1 point per red orb hit.
-        </p>
-        <p>
-          Each time you shoot it drains your yellow power bar. It goes up slowly
-          over time and even more if you hit a red orb.
-        </p>
-        <p>
-          When a red orb hits your defender line you will permanently lose
-          defence points from your blue defender bar.
+          When a missile hits your defender line you will permanently lose
+          defence points from your blue defender bar (top right).
         </p>
         <p>If your defender bar runs out, game over.</p>
         <button onClick={props.onStart}>Start Game</button>
