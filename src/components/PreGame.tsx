@@ -25,7 +25,7 @@ function PreGame(props: PreGameProps) {
           zIndex: 15,
         }}
       >
-        <h1>Protectorb</h1>
+        <h1>Recoil Command</h1>
         <p>A missile command tribute.</p>
         <p>Destroy the missiles before they hit your blue base.</p>
         <p>

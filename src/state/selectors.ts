@@ -14,6 +14,7 @@ import {
   itemTrailFamily,
   explosionFamily,
   lastExplosion,
+  shotTrailFamily,
 } from "./atoms";
 import {
   determineCollisions,
@@ -25,6 +26,7 @@ import {
   shotItem,
   enemyItem,
   explosionItem,
+  shotTrail,
 } from "../types/atom.types";
 import { getNumberInRange } from "../helpers/common.utils";
 
@@ -88,6 +90,8 @@ export const updateItemsPositions = selector({
         targetCollisions.delete(`${newItem.type}_${newItem.index}`);
         // remove player shot
         set(removeActiveItem, newItem);
+        // remove player shot trail
+        set(removeActiveItem, { ...newItem, type: "SHOT_TRAIL" });
         // limit power to 100
         set(powerBar, (val) => getNumberInRange(val + 2.5, 0, 100));
       }
@@ -110,14 +114,14 @@ export const updateItemsPositions = selector({
         set(setExplosion, newItem);
         set(points, (val) => val + 1);
       } else {
-        set(powerBar, (val) => getNumberInRange(val + 0.002, 0, 100));
+        set(powerBar, (val) => getNumberInRange(val + 0.003, 0, 100));
         switch (newItem.type) {
           case "ITEM":
             set(itemFamily(newItem.index), newItem as enemyItem);
             set(setItemTrail, newItem);
             break;
           case "SHOT":
-            set(shotFamily(newItem.index), newItem as shotItem);
+            set(setShot, newItem);
             break;
           case "EXPLOSION":
             set(explosionFamily(newItem.index), (exp: explosionItem) => {
@@ -181,6 +185,43 @@ export const setItemTrail = selector({
   },
 });
 
+export const setShot = selector({
+  key: "setShot",
+  get: () => {},
+  set: ({ set }, item: any) => {
+    set(shotFamily(item.index), item);
+    set(setShotTrail, item);
+  },
+});
+
+export const setShotTrail = selector({
+  key: "setShotTrail",
+  get: () => {},
+  set: ({ set }, item: any) => {
+    let isNew: boolean = false;
+    set(
+      shotTrailFamily(item.index),
+      (val): shotTrail => {
+        isNew = val.startX === -1;
+        return {
+          index: item.index,
+          type: "SHOT_TRAIL",
+          x: item.x,
+          y: item.y,
+          startX: val.startX > 0 ? val.startX : item.x,
+          startY: val.startY > 0 ? val.startY : item.y,
+        };
+      }
+    );
+    if (isNew) {
+      set(activeItems, (items) => [
+        ...items,
+        { index: item.index, type: "SHOT_TRAIL" },
+      ]);
+    }
+  },
+});
+
 export const removeActiveItem = selector({
   key: "removeActiveItem",
   get: () => {},
@@ -209,6 +250,13 @@ export const setNextShot = selector({
       index: nextShot,
       type: "SHOT",
     } as shotItem);
+    set(setShotTrail, {
+      startX: position.x,
+      startY: position.y,
+      x: position.x,
+      y: position.y,
+      index: nextShot,
+    });
     set(activeItems, (items) => [...items, { index: nextShot, type: "SHOT" }]);
     set(powerBar, (val) => getNumberInRange(val - 5, 0, 100));
     set(lastShot, nextShot);

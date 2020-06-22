@@ -9,6 +9,7 @@ function EnemyLevel() {
     <div
       style={{
         position: "absolute",
+        color: "white",
         top: 150,
         right: 0,
         zIndex: 10,

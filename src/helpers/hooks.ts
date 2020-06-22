@@ -1,10 +1,10 @@
 import { useSetRecoilState } from "recoil";
 import { getWidth, getHeight } from "./window.utils";
 import { useEffect } from "react";
-import { item } from "../types/atom.types";
+import { item, movingItems } from "../types/atom.types";
 import { removeActiveItem } from "../state/selectors";
 
-export function useIsActive(currentItem: item) {
+export function useIsActive(currentItem: movingItems) {
   const removeItemFromActive = useSetRecoilState(removeActiveItem);
   function calculateWidth() {
     return getWidth() + 30;
@@ -25,6 +25,17 @@ export function useIsActive(currentItem: item) {
     ) {
       // Remove reference from activeItems
       removeItemFromActive(currentItem);
+      if (currentItem.type === "SHOT") {
+        removeItemFromActive({
+          index: currentItem.index,
+          type: "SHOT_TRAIL",
+        });
+      } else {
+        removeItemFromActive({
+          index: currentItem.index,
+          type: "ITEM_TRAIL",
+        });
+      }
     }
   }, [currentItem]);
 }

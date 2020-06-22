@@ -42,9 +42,10 @@ function BallShooter(props: { debugMode?: boolean }) {
     setShot({
       x: shooterRef.current?.getBoundingClientRect().left ?? 0,
       y: shooterRef.current?.getBoundingClientRect().top ?? 0,
-      xIncrement: ((90 - angle) / 90) * 30,
-      yIncrement: (angle / 90) * 30,
+      xIncrement: ((90 - angle) / 90) * 20,
+      yIncrement: (angle / 90) * 20,
       veerLeft: veerLeft,
+      increment: 10,
       xCount: 0,
       yCount: 0,
       target: {
