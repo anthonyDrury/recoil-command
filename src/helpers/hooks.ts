@@ -1,7 +1,7 @@
 import { useSetRecoilState } from "recoil";
 import { getWidth, getHeight } from "./window.utils";
 import { useEffect } from "react";
-import { item, movingItems } from "../types/atom.types";
+import { movingItems } from "../types/atom.types";
 import { removeActiveItem } from "../state/selectors";
 
 export function useIsActive(currentItem: movingItems) {
@@ -37,5 +37,5 @@ export function useIsActive(currentItem: movingItems) {
         });
       }
     }
-  }, [currentItem]);
+  }, [currentItem, removeItemFromActive]);
 }

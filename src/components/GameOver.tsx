@@ -6,6 +6,9 @@ import { getReadableLevel } from "../state/selectors";
 function GameOver() {
   const pointTally = useRecoilValue(points);
   const level = useRecoilValue(getReadableLevel);
+  function reload() {
+    window.location.reload();
+  }
   return (
     <div
       style={{
@@ -19,10 +22,10 @@ function GameOver() {
       <div
         style={{
           width: 200,
-          height: 150,
           textAlign: "center",
           backgroundColor: "white",
           margin: "0 auto",
+          paddingBottom: "1rem",
           borderRadius: 15,
           zIndex: 15,
         }}
@@ -30,6 +33,7 @@ function GameOver() {
         <h2>You did your best!</h2>
         <p>Your points total was: {pointTally}</p>
         <p>You got up to level: {level}</p>
+        <button onClick={reload}>Play Again</button>
       </div>
     </div>
   );
