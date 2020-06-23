@@ -31,7 +31,7 @@ To improve efficiency, when an item moves out of view it is no longer rendered b
 
 ### Takeaways
 
-While atom is very impressive, and when used properly can save a lot of excess rendering, I find it difficult to think it is some magic bullet which now opens the gates for JS game development. Though I can definitely see it having a future in other use cases where lots of elements are required to be rendered at once, acting independently.
+While recoil.js is very impressive, and when used properly can save a lot of excess rendering, I find it difficult to think it is some magic bullet which now opens the gates for JS game development. Though I can definitely see it having a future in other use cases where lots of elements are required to be rendered at once, acting independently.
 
 Though it will be interesting to watch how efficient this project becomes over time as Recoil.js is updated, I will attempt to stay on top of coming updates to monitor the efficiency gains and will log them here.
 
