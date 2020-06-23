@@ -1,6 +1,6 @@
 # Recoil Command
 
-[https://proctectorb.vercel.app/](https://proctectorb.vercel.app/)
+[https://recoil-command.anthonydrury.vercel.app//](https://recoil-command.anthonydrury.vercel.app/)
 Recoil Command was inspired by Missile Command, an Atari game released in 1980.
 
 Recoil Command sees users firing their missiles at incoming missiles in order to defend their blue base. When the line is hit by the incoming missiles the players loses points. Though if the player destroys the missiles they will gain points and destroy the incoming missile. Though keep track of your yellow power bar! Without it you can't shoot.
